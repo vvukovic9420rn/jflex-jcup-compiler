@@ -1,0 +1,138 @@
+//import section
+
+import java_cup.runtime.*;
+import java.io.*;
+import java.util.*;
+
+import SymbolTable.*;
+
+parser code {:
+ 
+   public int errNo = 0;
+      public int warnNo = 0;
+
+      SymbolTable symbolTable;
+
+      public static void main(String[] args){
+         try{
+   		   FileReader file = new FileReader(args[0]);
+   		   java_cup.runtime.Scanner scanner = new MPLexer(file);
+   		   MPParser parser = new MPParser(scanner);
+   		   parser.parse();
+   		   parser.checkWarnings();
+
+   		   if(parser.errNo == 0 && parser.warnNo == 0){
+   		        System.out.println("Scan finished. No errors found.");
+   		   }
+   		   else{
+   		        System.out.println("Scan finished. Errors found: " + parser.errNo);
+   		   }
+   	  }
+   	  catch( Exception e ){
+   		   System.out.println(e);
+   	  }
+      }
+
+      public void checkWarnings(){
+         SymbolNode current = symbolTable.getVariables();
+
+         while(current != null) {
+         	Variable var = (Variable) current;
+         	if (var.last_def == -1 && var.last_use == -1) {
+         		System.out.println("Warning: Variable " + var.name + " declared, but never used.");
+         		warnNo++;
+         	}
+         	else if ( var.last_def > var.last_use ) {
+         		System.out.println( "Warning: Value in variable " + var.name + " in line " + var.last_def + " never used." );
+         		warnNo++;
+         	}
+         	current = current.next;
+        }
+      }
+
+      public void syntax_error(Symbol currentToken){
+      }
+
+      public void report_error(String message, Object info){
+      	   System.out.print( message );
+      }
+      
+      public int getLine(){
+      	  return ((MPLexer) getScanner()).getLine();
+      }
+   
+:};
+
+init with {:
+	symbolTable = new SymbolTable();
+:}
+
+
+
+
+//Terminal symbols
+terminal PROGRAM, BEGIN, END, INT, CHAR, REAL, FOR, TO, BY, DOWNTO, READ, WRITE;
+terminal PLUS, MINUS, MUL, DIV, MOD, LEFTPAR, RIGHTPAR, ASSIGN, SEMI, COMMA;
+terminal String ID;
+terminal Integer INTCONST;
+terminal Character CHARCONST;
+terminal Double REALCONST;
+
+
+//Nonterminal symbols
+non terminal Program, Block, VarSection, StatementList, Statement, VarDecl, Type, NameList;
+non terminal Assignment, Expression, ExpressionList, AddOperator, Term, MulOperator, Factor, Const;
+
+
+//Grammar
+Program ::= PROGRAM ID Block;
+
+Block ::= BEGIN VarSection StatementList END;
+
+VarSection ::= VarSection VarDecl
+            | VarDecl;
+
+VarDecl ::= Type NameList SEMI;
+
+NameList ::= NameList COMMA ID
+            | ID;
+
+Type ::= INT
+        | CHAR
+        | REAL;
+
+StatementList ::= StatementList Statement
+                | Statement;
+
+Statement ::= FOR Assignment TO Expression BY Const Statement
+            | FOR Assignment DOWNTO Expression BY Const Statement
+            | Assignment SEMI
+            | READ LEFTPAR NameList RIGHTPAR SEMI
+            | WRITE LEFTPAR ExpressionList RIGHTPAR SEMI
+            | Block;
+
+Const ::= INTCONST
+        | REALCONST
+        | CHARCONST;
+
+Assignment ::= ID ASSIGN Expression;
+
+Expression ::= Expression AddOperator Term
+            | Term;
+
+AddOperator ::= PLUS
+            | MINUS;
+
+Term ::= Term MulOperator Factor
+        | Factor;
+
+MulOperator ::= MUL
+            | DIV
+            | MOD;
+
+Factor ::= ID
+        | Const
+        | LEFTPAR Expression RIGHTPAR;
+
+ExpressionList ::= ExpressionList COMMA Expression
+                | Expression;

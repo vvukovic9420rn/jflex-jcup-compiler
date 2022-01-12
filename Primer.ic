@@ -1,0 +1,34 @@
+	Load_Const	R1, 5
+	Store		R1, i
+	Load_Mem	R1, i
+	JumpIfZero	R1, lab0
+	Load_Mem	R1, i
+	Load_Const	R2, 0
+	Mul		R1, R2
+	Store		R1, $tmp0
+	Load_Mem	R1, $tmp0
+	JumpIfZero	R1, lab2
+	Load_Const	R1, 23312
+	Load_Const	R2, 32423
+	Add		R1, R2
+	Store		R1, $tmp1
+	Load_Mem	R1, $tmp1
+	Store		R1, i
+	Jump	lab3
+lab2:
+	Load_Mem	R1, i
+	Load_Const	R2, 1
+	Add		R1, R2
+	Store		R1, $tmp2
+	Load_Mem	R1, $tmp2
+	Store		R1, j
+lab3:
+	Jump	lab1
+lab0:
+	Load_Mem	R1, i
+	Load_Const	R2, 2
+	Add		R1, R2
+	Store		R1, $tmp3
+	Load_Mem	R1, $tmp3
+	Store		R1, j
+lab1:
