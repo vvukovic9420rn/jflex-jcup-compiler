@@ -125,7 +125,18 @@ Const ::= INTCONST
         | REALCONST
         | CHARCONST;
 
-Assignment ::= ID ASSIGN Expression;
+Assignment ::= ID:varName ASSIGN Expression
+            {:
+                Variable var = parser.symbolTable.getVar(varName);
+
+                if(var == null){
+                    System.out.println("Error in line " + parser.getLine() + ": Variable " + varName + " not declared.");
+                    parser.errNo++;
+                }
+                else{
+                    var.last_def = parser.getLine();
+                }
+            :};
 
 Expression ::= Expression AddOperator Term
             | Term;
@@ -140,7 +151,22 @@ MulOperator ::= MUL
             | DIV
             | MOD;
 
-Factor ::= ID
+Factor ::= ID:varName
+        {:
+            Variable var = parser.symbolTable.getVar(varName);
+
+            if(var == null){
+                System.out.println("Error in line " + parser.getLine() + ": Variable " + varName + " not declared.");
+                parser.errNo++;
+            }
+            else{
+                if(var.last_def == -1) {
+                    System.out.println( "Error in line " + parser.getLine() + ": Variable " + varName + " not initialized.");
+                    parser.errNo++;
+                }
+                var.last_use = parser.getLine();
+            }
+        :}
         | Const
         | LEFTPAR Expression RIGHTPAR;
 

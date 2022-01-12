@@ -12,7 +12,7 @@ public class Variable extends SymbolNode {
 	{
 		super( name, SymbolNode.VARIABLE, type, next );
 		last_def = -1;
-		last_def = -1;
+		last_use = -1;
 		value = null;
 	}
 	
