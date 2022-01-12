@@ -12,7 +12,7 @@ public class SymbolTable {
 	public SymbolTable( ) {
 		types = new Type( "unknown", Type.UNKNOWN, null);
 		types = new Type( "char", Type.CHARACTER, types );
-		types = new Type( "integer", Type.INTEGER, types );
+		types = new Type( "int", Type.INTEGER, types );
 		types = new Type("real", Type.REAL, types);
 		variables = null;
 	}

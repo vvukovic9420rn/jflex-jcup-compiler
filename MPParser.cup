@@ -79,10 +79,10 @@ terminal Double REALCONST;
 
 //Nonterminal symbols
 non terminal Program, Block, VarSection, StatementList, Statement, VarDecl;
-non terminal Assignment, Expression, ExpressionList, AddOperator, Term, MulOperator, Factor;
+non terminal Assignment, ExpressionList, AddOperator, Term, MulOperator, Factor;
 non terminal Constant Const;
 non terminal ArrayList NameList;
-non terminal Type Type;
+non terminal Type Type, Expression;
 
 //Grammar
 Program ::= PROGRAM ID Block;
@@ -125,7 +125,7 @@ Const ::= INTCONST
         | REALCONST
         | CHARCONST;
 
-Assignment ::= ID:varName ASSIGN Expression
+Assignment ::= ID:varName ASSIGN Expression:e
             {:
                 Variable var = parser.symbolTable.getVar(varName);
 
@@ -135,6 +135,18 @@ Assignment ::= ID:varName ASSIGN Expression
                 }
                 else{
                     var.last_def = parser.getLine();
+                    if(var.type.tkind == Type.REAL && (e.tkind != Type.REAL && e.tkind != Type.INTEGER && e.tkind != Type.CHARACTER)){
+                        System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
+                        parser.errNo++;
+                    }
+                    if(var.type.tkind == Type.INTEGER && (e.tkind != Type.INTEGER && e.tkind != Type.CHARACTER)){
+                        System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
+                        parser.errNo++;
+                    }
+                    if(var.type.tkind == Type.CHARACTER && e.tkind != Type.CHARACTER){
+                        System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
+                        parser.errNo++;
+                    }
                 }
             :};
 
