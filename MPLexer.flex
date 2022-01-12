@@ -78,10 +78,10 @@ sys8 = [0-7]
 
 {digit}+		{ return new Symbol(sym.INTCONST, new Integer(yytext())); }
 0x{sys16}+      { return new Symbol(sym.INTCONST, new Integer(yytext())); }
-0{sys8}+        { return new Symbol(sym.INCONST, new Integer(yytext())); }
+0{sys8}+        { return new Symbol(sym.INTCONST, new Integer(yytext())); }
 
-{digit}+\.({digit}+)?(E[+\-]{digit}+)?      { return new Symbol(sym.REALCONST, new Double(yytext())); }
-\.{digit}+(E[+\-]{digit}+)?                 { return new Symbol(sym.REALCONST, new Double(yytext())); }
+{digit}+\.{digit}+(E[+\-]{digit}+)?      { return new Symbol(sym.REALCONST, new Double(yytext())); }
+\.{digit}+(E[+\-]{digit}+)?              { return new Symbol(sym.REALCONST, new Double(yytext())); }
 
 //error symbol
 .		{ System.out.println( "ERROR: " + yytext() ); }
