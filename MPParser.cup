@@ -79,10 +79,10 @@ terminal Double REALCONST;
 
 //Nonterminal symbols
 non terminal Program, Block, VarSection, StatementList, Statement, VarDecl;
-non terminal Assignment, ExpressionList, AddOperator, Term, MulOperator, Factor;
+non terminal Assignment, ExpressionList, AddOperator, MulOperator;
 non terminal Constant Const;
 non terminal ArrayList NameList;
-non terminal Type Type, Expression;
+non terminal Type Type, Expression, Term, Factor;
 
 //Grammar
 Program ::= PROGRAM ID Block;
@@ -150,13 +150,43 @@ Assignment ::= ID:varName ASSIGN Expression:e
                 }
             :};
 
-Expression ::= Expression AddOperator Term
+Expression ::= Expression:e AddOperator Term:t
+            {:
+                if(e.tkind == Type.REAL || t.tkind == Type.REAL){
+                    RESULT = parser.symbolTable.getType("real");
+                }
+                else if(e.tkind == Type.INTEGER || t.tkind != Type.INTEGER){
+                    RESULT = parser.symbolTable.getType("int");
+                }
+                else if(e.tkind == Type.CHARACTER && t.tkind == Type.CHARACTER){
+                    RESULT = parser.symbolTable.getType("char");
+                }
+                else{
+                    System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
+                    parser.errNo++;
+                }
+            :}
             | Term;
 
 AddOperator ::= PLUS
             | MINUS;
 
 Term ::= Term MulOperator Factor
+        {:
+            if(e.tkind == Type.REAL || t.tkind == Type.REAL){
+                RESULT = parser.symbolTable.getType("real");
+            }
+            else if(e.tkind == Type.INTEGER || t.tkind != Type.INTEGER){
+                RESULT = parser.symbolTable.getType("int");
+            }
+            else if(e.tkind == Type.CHARACTER && t.tkind == Type.CHARACTER){
+                RESULT = parser.symbolTable.getType("char");
+            }
+            else{
+                System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
+                parser.errNo++;
+            }
+        :}
         | Factor;
 
 MulOperator ::= MUL
@@ -169,9 +199,11 @@ Factor ::= ID:varName
 
             if(var == null){
                 System.out.println("Error in line " + parser.getLine() + ": Variable " + varName + " not declared.");
+                RESULT = parser.symbolTable.getType("unknown");
                 parser.errNo++;
             }
             else{
+                RESULT = var.type;
                 if(var.last_def == -1) {
                     System.out.println( "Error in line " + parser.getLine() + ": Variable " + varName + " not initialized.");
                     parser.errNo++;
