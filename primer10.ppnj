@@ -1,0 +1,13 @@
+program main
+begin
+
+    real num1, num2;
+    int res1, res2;
+
+    num1 = 2.5;
+    num2 = 3.7;
+
+    res1 = num1 + num2;
+    res2 = num1 * num2;
+
+end

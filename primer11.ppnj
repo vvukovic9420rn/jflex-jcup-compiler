@@ -1,0 +1,11 @@
+program main
+begin
+
+    real m1, m2;
+    int res;
+
+    m1 = 5.3;
+    m2 = 2.1;
+
+    res = m1 mod m2;
+end

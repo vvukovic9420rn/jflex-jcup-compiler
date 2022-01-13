@@ -1,0 +1,14 @@
+program main
+begin
+
+    real h, k, g, f;
+
+    h = 4.5;
+    k = 9.9;
+
+    g = h * k;
+    f = (2.4 + (h / k)) - ((0.5 * g) + (g - 2));
+
+    read(f);
+
+end

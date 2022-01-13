@@ -1,0 +1,27 @@
+program main
+begin
+
+    int a;
+
+    for a = 20 downto 1 by 1
+        begin
+            int b, c, d;
+            b = 2;
+
+            write(a mod b);
+
+            for c = 0 to 5 by 1
+                read(c);
+
+            for d = 0 to 5 by 1
+                begin
+                    real x;
+                    x = d * 2.2;
+
+                    write((x + 1.9) * 2);
+                end
+        end
+
+    write(a);
+
+end
