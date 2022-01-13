@@ -79,10 +79,10 @@ terminal Double REALCONST;
 
 //Nonterminal symbols
 non terminal Program, Block, VarSection, StatementList, Statement, VarDecl;
-non terminal Assignment, ExpressionList, AddOperator, MulOperator;
+non terminal ExpressionList, AddOperator, MulOperator;
 non terminal Constant Const;
 non terminal ArrayList NameList;
-non terminal Type Type, Expression, Term, Factor;
+non terminal Type Type, Expression, Term, Factor, Assignment;
 
 //Grammar
 Program ::= PROGRAM ID Block;
@@ -104,12 +104,25 @@ VarDecl ::= Type:type NameList:nameList SEMI
             :}
             ;
 
-NameList ::= NameList COMMA ID
+NameList ::= NameList:nameList COMMA ID:name
+            {:
+                RESULT = nameList;
+                RESULT.add(name);
+            :}
             | ID;
 
 Type ::= INT
+        {:
+            RESULT = parser.symbolTable.getType("int");
+        :}
         | CHAR
-        | REAL;
+        {:
+            RESULT = parser.symbolTable.getType("char");
+        :}
+        | REAL
+        {:
+            RESULT = parser.symbolTable.getType("real");
+        :};
 
 StatementList ::= StatementList Statement
                 | Statement;
@@ -149,9 +162,18 @@ Statement ::= FOR Assignment:a TO Expression BY Const:c Statement
             | WRITE LEFTPAR ExpressionList RIGHTPAR SEMI
             | Block;
 
-Const ::= INTCONST
-        | REALCONST
-        | CHARCONST;
+Const ::= INTCONST:c
+        {:
+            RESULT = new Constant(parser.symbolTable.getType("int"), c);
+        :}
+        | REALCONST:c
+        {:
+            RESULT = new Constant(parser.symbolTable.getType("real"), c);
+        :}
+        | CHARCONST:c
+        {:
+            RESULT = new Constant(parser.symbolTable.getType("char"), c);
+        :};
 
 Assignment ::= ID:varName ASSIGN Expression:e
             {:
@@ -175,6 +197,8 @@ Assignment ::= ID:varName ASSIGN Expression:e
                         System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
                         parser.errNo++;
                     }
+
+                    RESULT = e;
                 }
             :};
 
