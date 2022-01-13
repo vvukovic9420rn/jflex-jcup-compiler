@@ -1,0 +1,13 @@
+program main
+begin
+
+    char x, y;
+    char z;
+
+    x = 'a';
+    y = 'b';
+    z = x - y;
+
+    write(z);
+
+end

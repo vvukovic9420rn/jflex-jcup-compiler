@@ -100,6 +100,7 @@ VarDecl ::= Type:type NameList:nameList SEMI
                     if(!parser.symbolTable.addVar(name, type)){
                         System.out.println("Error in line " + parser.getLine() + ": " + "Variable " + name + " already declared.");
                     }
+                    System.out.println("decl " + name);
                 }
             :}
             ;
@@ -109,7 +110,11 @@ NameList ::= NameList:nameList COMMA ID:name
                 RESULT = nameList;
                 RESULT.add(name);
             :}
-            | ID;
+            | ID:name
+            {:
+                RESULT = new ArrayList();
+                RESULT.add(name);
+            :};
 
 Type ::= INT
         {:
@@ -199,6 +204,7 @@ Assignment ::= ID:varName ASSIGN Expression:e
                     }
 
                     RESULT = e;
+                    System.out.println("assign " + varName);
                 }
             :};
 
@@ -217,10 +223,12 @@ Expression ::= Expression:e AddOperator Term:t
                     System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
                     parser.errNo++;
                 }
+                System.out.println("expr " + e + " " + t);
             :}
             | Term:t
             {:
                 RESULT = t;
+                System.out.println("expression -> term");
             :};
 
 AddOperator ::= PLUS
@@ -229,8 +237,7 @@ AddOperator ::= PLUS
 Term ::= Term:t MulOperator:m Factor:f
         {:
             //TODO TESTIRAJ
-            String mo = (String) m;
-            if(mo.equals("mod")){
+            if(m != null && m.equals("mod")){
                 if(t.tkind == Type.INTEGER && f.tkind == Type.INTEGER){
                     RESULT = parser.symbolTable.getType("int");
                 }
@@ -238,6 +245,7 @@ Term ::= Term:t MulOperator:m Factor:f
                     System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
                     parser.errNo++;
                 }
+                System.out.println("term mod");
             }
             else{
                 if(t.tkind == Type.REAL || f.tkind == Type.REAL){
@@ -253,6 +261,7 @@ Term ::= Term:t MulOperator:m Factor:f
                     System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
                     parser.errNo++;
                 }
+                System.out.println("term " + t + " " + "operator " + m + " " + f);
             }
 
 
@@ -260,11 +269,15 @@ Term ::= Term:t MulOperator:m Factor:f
         | Factor:f
         {:
             RESULT = f;
+            System.out.println("term -> factor " + f);
         :};
 
 MulOperator ::= MUL
             | DIV
-            | MOD;
+            | MOD
+            {:
+                RESULT = "mod";
+            :};
 
 Factor ::= ID:varName
         {:

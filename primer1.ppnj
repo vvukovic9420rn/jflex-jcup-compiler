@@ -1,0 +1,14 @@
+program main
+begin
+
+    int x, y, z;
+    int a, b;
+
+    x = 5;
+    y = 6;
+    z = x + y;
+
+    a = x;
+
+    read(z);
+end

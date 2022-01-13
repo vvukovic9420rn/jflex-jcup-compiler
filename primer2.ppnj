@@ -1,0 +1,13 @@
+program main
+begin
+
+    real a, b, c;
+    real r;
+
+    a = 3.2;
+    b = 4.6;
+    c = a + b;
+
+    r = 3 + 1.7;
+
+end
