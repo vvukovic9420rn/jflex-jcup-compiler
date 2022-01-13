@@ -1,0 +1,9 @@
+program main
+begin
+
+    int a, b;
+
+    a = 7;
+    b = a + c;
+
+end

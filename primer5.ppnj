@@ -1,0 +1,10 @@
+program main
+begin
+
+    int num1, num2, res;
+
+    num1 = 5;
+    num2 = 2;
+
+    res = num1 mod num2;
+end

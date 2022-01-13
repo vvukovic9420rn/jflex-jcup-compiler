@@ -32,8 +32,8 @@ sys8 = [0-7]
 
 %%
 // rules section
-\*\*			{ yybegin( COMMENT );}
-<COMMENT>\*\*	{ yybegin( YYINITIAL );}
+\*\*			{ yybegin( COMMENT ); }
+<COMMENT>\*\*	{ yybegin( YYINITIAL ); }
 <COMMENT>.		{ ; }
 
 [\t\r\n ]		{ ; }

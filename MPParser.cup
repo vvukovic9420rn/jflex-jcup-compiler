@@ -96,9 +96,15 @@ VarDecl ::= Type:type NameList:nameList SEMI
             {:
                 for(int i = 0; i < nameList.size(); i++){
                     String name = (String) nameList.get(i);
-
-                    if(!parser.symbolTable.addVar(name, type)){
+                    System.out.println("obradjuje se var " + name);
+                    Variable var = parser.symbolTable.getVar(name);
+                    if(var == null){
+                        parser.symbolTable.addVar(name, type);
+                        System.out.println("dodao " + name);
+                    }
+                    else{
                         System.out.println("Error in line " + parser.getLine() + ": " + "Variable " + name + " already declared.");
+                        parser.errNo++;
                     }
                     System.out.println("decl " + name);
                 }
