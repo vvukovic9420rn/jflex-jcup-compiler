@@ -11,11 +11,7 @@ public class SymbolNode {
 	public Type type;
 	public SymbolNode next;
 	
-	public SymbolNode( String symbolName, 
-			int symbolKind, 
-			Type symbolType, 
-			SymbolNode nextSymbol)
-	{
+	public SymbolNode( String symbolName, int symbolKind, Type symbolType, SymbolNode nextSymbol) {
 		name = symbolName;
 		kind = symbolKind;
 		type = symbolType;

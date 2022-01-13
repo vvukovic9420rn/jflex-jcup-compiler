@@ -17,8 +17,7 @@ public class SymbolTable {
 		variables = null;
 	}
 	
-	public boolean addVar( String name, Type type )
-	{
+	public boolean addVar( String name, Type type ) {
 		Variable existing = this.getVar( name );
 		if ( existing != null )
 			return false;
@@ -26,20 +25,16 @@ public class SymbolTable {
 		return true;
 	}
 	
-	public Variable getVar( String name )
-	{
+	public Variable getVar( String name ) {
 		SymbolNode current = variables;
-		while ( current != null && 
-				current.name.compareTo( name ) != 0 )
+		while ( current != null && current.name.compareTo( name ) != 0 )
 			current = current.next;
 		return ( Variable ) current;
 	}
 	
-	public Type getType(String typeName)
-	{
+	public Type getType(String typeName) {
 		SymbolNode current = types;
-		while ( current != null && 
-				current.name.compareTo( typeName ) != 0 )
+		while ( current != null && current.name.compareTo( typeName ) != 0 )
 			current = current.next;
 		return ( Type ) current;
 	}

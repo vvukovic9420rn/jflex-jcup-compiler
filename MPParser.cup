@@ -114,8 +114,36 @@ Type ::= INT
 StatementList ::= StatementList Statement
                 | Statement;
 
-Statement ::= FOR Assignment TO Expression BY Const Statement
-            | FOR Assignment DOWNTO Expression BY Const Statement
+Statement ::= FOR Assignment:a TO Expression BY Const:c Statement
+            {:
+                if(c.type.tkind != Type.INTEGER && c.type.tkind != Type.CHARACTER && c.type.tkind != Type.REAL){
+                    System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
+                    parser.errNo++;
+                }
+                if(a.tkind == Type.INTEGER && c.type.tkind == Type.REAL){
+                    System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
+                    parser.errNo++;
+                }
+                if(a.tkind == Type.CHARACTER && c.type.tkind != Type.CHARACTER){
+                    System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
+                    parser.errNo++;
+                }
+            :}
+            | FOR Assignment:a DOWNTO Expression BY Const:c Statement
+            {:
+                if(c.type.tkind != Type.INTEGER && c.type.tkind != Type.CHARACTER && c.type.tkind != Type.REAL){
+                    System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
+                    parser.errNo++;
+                }
+                if(a.tkind == Type.INTEGER && c.type.tkind == Type.REAL){
+                    System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
+                    parser.errNo++;
+                }
+                if(a.tkind == Type.CHARACTER && c.type.tkind != Type.CHARACTER){
+                    System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
+                    parser.errNo++;
+                }
+            :}
             | Assignment SEMI
             | READ LEFTPAR NameList RIGHTPAR SEMI
             | WRITE LEFTPAR ExpressionList RIGHTPAR SEMI
@@ -155,7 +183,7 @@ Expression ::= Expression:e AddOperator Term:t
                 if(e.tkind == Type.REAL || t.tkind == Type.REAL){
                     RESULT = parser.symbolTable.getType("real");
                 }
-                else if(e.tkind == Type.INTEGER || t.tkind != Type.INTEGER){
+                else if(e.tkind == Type.INTEGER || t.tkind == Type.INTEGER){
                     RESULT = parser.symbolTable.getType("int");
                 }
                 else if(e.tkind == Type.CHARACTER && t.tkind == Type.CHARACTER){
@@ -171,21 +199,36 @@ Expression ::= Expression:e AddOperator Term:t
 AddOperator ::= PLUS
             | MINUS;
 
-Term ::= Term MulOperator Factor
+Term ::= Term:t MulOperator:m Factor:f
         {:
-            if(e.tkind == Type.REAL || t.tkind == Type.REAL){
-                RESULT = parser.symbolTable.getType("real");
-            }
-            else if(e.tkind == Type.INTEGER || t.tkind != Type.INTEGER){
-                RESULT = parser.symbolTable.getType("int");
-            }
-            else if(e.tkind == Type.CHARACTER && t.tkind == Type.CHARACTER){
-                RESULT = parser.symbolTable.getType("char");
+            //TODO TESTIRAJ
+            String mo = (String) m;
+            if(mo.equals("mod")){
+                if(t.tkind == Type.INTEGER && f.tkind == Type.INTEGER){
+                    RESULT = parser.symbolTable.getType("int");
+                }
+                else{
+                    System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
+                    parser.errNo++;
+                }
             }
             else{
-                System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
-                parser.errNo++;
+                if(t.tkind == Type.REAL || f.tkind == Type.REAL){
+                    RESULT = parser.symbolTable.getType("real");
+                }
+                else if(t.tkind == Type.INTEGER || f.tkind == Type.INTEGER){
+                    RESULT = parser.symbolTable.getType("int");
+                }
+                else if(t.tkind == Type.CHARACTER && f.tkind == Type.CHARACTER){
+                    RESULT = parser.symbolTable.getType("char");
+                }
+                else{
+                    System.out.println( "Error in line " + parser.getLine() + ": Type missmatch." );
+                    parser.errNo++;
+                }
             }
+
+
         :}
         | Factor;
 
