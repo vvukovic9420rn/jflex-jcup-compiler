@@ -218,7 +218,10 @@ Expression ::= Expression:e AddOperator Term:t
                     parser.errNo++;
                 }
             :}
-            | Term;
+            | Term:t
+            {:
+                RESULT = t;
+            :};
 
 AddOperator ::= PLUS
             | MINUS;
@@ -254,7 +257,10 @@ Term ::= Term:t MulOperator:m Factor:f
 
 
         :}
-        | Factor;
+        | Factor:f
+        {:
+            RESULT = f;
+        :};
 
 MulOperator ::= MUL
             | DIV
@@ -278,8 +284,14 @@ Factor ::= ID:varName
                 var.last_use = parser.getLine();
             }
         :}
-        | Const
-        | LEFTPAR Expression RIGHTPAR;
+        | Const:c
+        {:
+            RESULT = c.type;
+        :}
+        | LEFTPAR Expression:e RIGHTPAR
+        {:
+            RESULT = e;
+        :};
 
 ExpressionList ::= ExpressionList COMMA Expression
                 | Expression;
