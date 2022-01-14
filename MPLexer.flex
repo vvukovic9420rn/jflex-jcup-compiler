@@ -78,8 +78,8 @@ dec = 0
 //constants
 \'[^]\'			{ return new Symbol(sym.CHARCONST, new Character(yytext().charAt(1))); }
 
-{dec}{sys8}+      { return new Symbol(sym.INTCONST, new Integer(yytext())); }
-{hex}{sys16}+     { return new Symbol(sym.INTCONST, new Integer(yytext())); }
+{dec}{sys8}+      { return new Symbol(sym.INTCONST, Integer.decode("0" + yytext().substring(1))); }
+{hex}{sys16}+     { return new Symbol(sym.INTCONST, Integer.decode("0x" + yytext().substring(2))); }
 {digit}+		  { return new Symbol(sym.INTCONST, new Integer(yytext())); }
 
 

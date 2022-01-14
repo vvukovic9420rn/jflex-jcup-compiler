@@ -5,7 +5,7 @@ begin
     int a, b;
 
     x = 5;
-    y = 6;
+    y = 0x6A;
     z = x + y;
 
     a = x;
