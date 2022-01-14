@@ -29,11 +29,13 @@ letter = [a-zA-Z]
 digit = [0-9]
 sys16 = [0-9A-F]
 sys8 = [0-7]
+hex = 0x
+dec = 0
 
 %%
 // rules section
-\*\*			{ yybegin( COMMENT ); }
 <COMMENT>\*\*	{ yybegin( YYINITIAL ); }
+\*\*			{ yybegin( COMMENT ); }
 <COMMENT>.		{ ; }
 
 [\t\r\n ]		{ ; }
@@ -76,9 +78,10 @@ sys8 = [0-7]
 //constants
 \'[^]\'			{ return new Symbol(sym.CHARCONST, new Character(yytext().charAt(1))); }
 
-{digit}+		{ return new Symbol(sym.INTCONST, new Integer(yytext())); }
-0x{sys16}+      { return new Symbol(sym.INTCONST, new Integer(yytext())); }
-0{sys8}+        { return new Symbol(sym.INTCONST, new Integer(yytext())); }
+{dec}{sys8}+      { return new Symbol(sym.INTCONST, new Integer(yytext())); }
+{hex}{sys16}+     { return new Symbol(sym.INTCONST, new Integer(yytext())); }
+{digit}+		  { return new Symbol(sym.INTCONST, new Integer(yytext())); }
+
 
 {digit}+\.{digit}+(E[+\-]{digit}+)?      { return new Symbol(sym.REALCONST, new Double(yytext())); }
 \.{digit}+(E[+\-]{digit}+)?              { return new Symbol(sym.REALCONST, new Double(yytext())); }
